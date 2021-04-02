@@ -1,0 +1,186 @@
+- name: Create the EC2 instance
+  hosts: localhost
+  gather_facts: false 
+
+  vars_files:
+    - vars/info.yml
+  
+  tasks:
+    - name: Create the VPC
+      ec2_vpc_net:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        name: ansible_vpc_net
+        cidr_block: 10.0.0.0/16
+        tags:
+          module: ec2_vpc_net
+        tenancy: default
+      register: ansible_VPC
+
+#    - name: Display ansible_VPC output
+#      debug:
+#        var: ansible_VPC
+
+
+    - name: Create the subnet
+      ec2_vpc_subnet:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        state: present
+        cidr: 10.0.0.0/16
+        vpc_id: "{{ ansible_VPC.vpc.id }}"
+        map_public: yes
+        tags:
+          Name: ansible_public_subnet
+      register: ansible_public_subnet
+
+#    - name: Display ansible_public_subnet output
+#      debug:
+#        var: ansible_public_subnet
+
+    
+    - name: Create the internet gateway
+      ec2_vpc_igw:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        state: present
+        vpc_id: "{{ ansible_VPC.vpc.id }}"
+        tags:
+          Name: ansible_VPC_IGW
+      register: ansible_VPC_IGW
+
+#    - name: Display ansible_VPC_IGW output
+#      debug:
+#        var: ansible_VPC_IGW
+
+
+    - name: Create the route table
+      ec2_vpc_route_table:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        state: present
+        vpc_id: "{{ ansible_VPC.vpc.id }}"
+        tags:
+          Name: ansible_route_table
+        subnets: 
+          - "{{ ansible_public_subnet.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ ansible_VPC_IGW.gateway_id }}"
+      register: ansible_route_table
+    
+#    - name: Display ansible_route_table output
+#      debug:
+#        var: ansible_route_table
+
+    - name: Create the Security group
+      ec2_group:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        name: "Ansible security group"
+        description: "Ansible security group description"
+        vpc_id: "{{ ansible_VPC.vpc.id }}"
+        tags: 
+          Name: Ansible security group
+        rules: 
+          - proto: "tcp"
+            ports: "22"
+            cidr_ip: 0.0.0.0/0
+      register: ansible_security_group
+
+#    - name: Display ansible_security_group output
+#      debug:
+#        var: ansible_security_group
+
+#===================================================================#
+#                                                                   #
+# Get all the canonical ubuntu 20.04 images and use the more recent #
+#                                                                   #
+#===================================================================#
+
+    - name: Find all canonical ubuntu 20.04 AMI
+      ec2_ami_info:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        owners: "{{ canonical_ID }}"
+        filters: 
+          architecture: x86_64
+          name: "{{ ubuntu_search_name }}"
+      register: ubuntu_amis
+    
+#    - name: Display the amis output
+#      debug:
+#        var: ubuntu_amis
+    
+    - name: Get latests version
+      set_fact: 
+        latest_ubuntu_ami: "{{ ubuntu_amis.images | sort(attribute='creation_date') | last }}"
+
+    - name: Display the latest_ubuntu_ami (the one we are going to use)
+      debug: 
+        var: "{{ latest_ubuntu_ami.name }}"
+
+
+    - name: Deploy EC2 instance
+      ec2:
+        aws_access_key: "{{ aws_id }}"
+        aws_secret_key: "{{ aws_key }}"
+        region: "{{ aws_region }}"
+        image: "{{ latest_ubuntu_ami.image_id }}"
+        instance_type: t2.micro
+        key_name: "{{ ssh_keyname }}"
+        count: "{{ instances_number }}"
+        state: present
+        group_id: "{{ ansible_security_group.group_id }}"
+        wait: yes
+        vpc_subnet_id: "{{ ansible_public_subnet.subnet.id }}"
+        assign_public_ip: yes
+        instance_tags: 
+          Name: ansible_ubuntu
+      register: ansible_ec2_info
+    
+#    - name: Display ansible_ec2_info output
+#      debug: 
+#        var: ansible_ec2_info 
+
+    - name: Add EC2 instance public IP to host group
+      add_host: hostname={{ item.public_ip }} groups=ansible_hosts
+      loop: "{{ ansible_ec2_info.instances }}" # If there is more than one instance
+
+    - name: Wait until the instance(s) is/are OK
+      wait_for: 
+        port: 22
+        delay: 10
+        host: "{{ item.public_ip }}"
+      loop: "{{ ansible_ec2_info.instances }}"
+
+    - name: New ssh fingerprint
+      shell: ssh-keyscan -H {{ item.public_ip }} >> ~/.ssh/known_hosts
+      with_items: "{{ ansible_ec2_info.instances }}"
+
+    
+- hosts: ansible_hosts
+  name: Installing required packages to all the instances
+  connection: ssh
+  gather_facts: true
+
+  vars_files:
+    - vars/info.yml
+
+  user: "{{ ubuntu_username }}"
+
+  vars:
+    ansible_ssh_private_key_file: "{{ ssh_keyname }}.pem"
+
+  tasks: 
+  - name: sudo apt-get update
+    raw: sudo apt-get update
+  - name: Installing python3 python3-pip g++ make git
+    raw: sudo apt-get update && sudo apt-get install -y python3 python3-pip g++ build-essential git
+

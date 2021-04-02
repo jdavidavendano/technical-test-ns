@@ -1,0 +1,8 @@
+aws_id: AAAA
+aws_key: AAAA/BBB
+aws_region: us-east-1
+ssh_keyname: <name_pem_file>
+instances_number: 1
+canonical_ID: 099720109477
+ubuntu_search_name: ubuntu*20.04*
+ubuntu_username: ubuntu

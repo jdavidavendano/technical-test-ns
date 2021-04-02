@@ -1,0 +1,878 @@
+Resources:
+  vpcA2121C38:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/Resource
+  vpcPublicSubnet1Subnet2E65531E:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/Subnet
+  vpcPublicSubnet1RouteTable48A2DF9B:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/RouteTable
+  vpcPublicSubnet1RouteTableAssociation5D3F4579:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet1RouteTable48A2DF9B
+      SubnetId:
+        Ref: vpcPublicSubnet1Subnet2E65531E
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/RouteTableAssociation
+  vpcPublicSubnet1DefaultRoute10708846:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet1RouteTable48A2DF9B
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: vpcIGWE57CBDCA
+    DependsOn:
+      - vpcVPCGW7984C166
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/DefaultRoute
+  vpcPublicSubnet1EIPDA49DCBE:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/EIP
+  vpcPublicSubnet1NATGateway9C16659E:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - vpcPublicSubnet1EIPDA49DCBE
+          - AllocationId
+      SubnetId:
+        Ref: vpcPublicSubnet1Subnet2E65531E
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet1/NATGateway
+  vpcPublicSubnet2Subnet009B674F:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.32.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/Subnet
+  vpcPublicSubnet2RouteTableEB40D4CB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/RouteTable
+  vpcPublicSubnet2RouteTableAssociation21F81B59:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet2RouteTableEB40D4CB
+      SubnetId:
+        Ref: vpcPublicSubnet2Subnet009B674F
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/RouteTableAssociation
+  vpcPublicSubnet2DefaultRouteA1EC0F60:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet2RouteTableEB40D4CB
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: vpcIGWE57CBDCA
+    DependsOn:
+      - vpcVPCGW7984C166
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/DefaultRoute
+  vpcPublicSubnet2EIP9B3743B1:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/EIP
+  vpcPublicSubnet2NATGateway9B8AE11A:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - vpcPublicSubnet2EIP9B3743B1
+          - AllocationId
+      SubnetId:
+        Ref: vpcPublicSubnet2Subnet009B674F
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet2/NATGateway
+  vpcPublicSubnet3Subnet11B92D7C:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.64.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1c
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/Subnet
+  vpcPublicSubnet3RouteTableA3C00665:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/RouteTable
+  vpcPublicSubnet3RouteTableAssociationD102D1C4:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet3RouteTableA3C00665
+      SubnetId:
+        Ref: vpcPublicSubnet3Subnet11B92D7C
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/RouteTableAssociation
+  vpcPublicSubnet3DefaultRoute3F356A11:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPublicSubnet3RouteTableA3C00665
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: vpcIGWE57CBDCA
+    DependsOn:
+      - vpcVPCGW7984C166
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/DefaultRoute
+  vpcPublicSubnet3EIP2C3B9D91:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/EIP
+  vpcPublicSubnet3NATGateway82F6CA9E:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - vpcPublicSubnet3EIP2C3B9D91
+          - AllocationId
+      SubnetId:
+        Ref: vpcPublicSubnet3Subnet11B92D7C
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PublicSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PublicSubnet3/NATGateway
+  vpcPrivateSubnet1Subnet934893E8:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.96.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet1/Subnet
+  vpcPrivateSubnet1RouteTableB41A48CC:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet1
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet1/RouteTable
+  vpcPrivateSubnet1RouteTableAssociation67945127:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet1RouteTableB41A48CC
+      SubnetId:
+        Ref: vpcPrivateSubnet1Subnet934893E8
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet1/RouteTableAssociation
+  vpcPrivateSubnet1DefaultRoute1AA8E2E5:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet1RouteTableB41A48CC
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: vpcPublicSubnet1NATGateway9C16659E
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet1/DefaultRoute
+  vpcPrivateSubnet2Subnet7031C2BA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.128.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet2/Subnet
+  vpcPrivateSubnet2RouteTable7280F23E:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet2
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet2/RouteTable
+  vpcPrivateSubnet2RouteTableAssociation007E94D3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet2RouteTable7280F23E
+      SubnetId:
+        Ref: vpcPrivateSubnet2Subnet7031C2BA
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet2/RouteTableAssociation
+  vpcPrivateSubnet2DefaultRouteB0E07F99:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet2RouteTable7280F23E
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: vpcPublicSubnet2NATGateway9B8AE11A
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet2/DefaultRoute
+  vpcPrivateSubnet3Subnet985AC459:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.160.0/19
+      VpcId:
+        Ref: vpcA2121C38
+      AvailabilityZone: us-east-1c
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet3/Subnet
+  vpcPrivateSubnet3RouteTable24DA79A0:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc/PrivateSubnet3
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet3/RouteTable
+  vpcPrivateSubnet3RouteTableAssociationC58B3C2C:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet3RouteTable24DA79A0
+      SubnetId:
+        Ref: vpcPrivateSubnet3Subnet985AC459
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet3/RouteTableAssociation
+  vpcPrivateSubnet3DefaultRoute30C45F47:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: vpcPrivateSubnet3RouteTable24DA79A0
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: vpcPublicSubnet3NATGateway82F6CA9E
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/PrivateSubnet3/DefaultRoute
+  vpcIGWE57CBDCA:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: technicaltest-nodesource/vpc
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/IGW
+  vpcVPCGW7984C166:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: vpcA2121C38
+      InternetGatewayId:
+        Ref: vpcIGWE57CBDCA
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/vpc/VPCGW
+  HostedZoneDB99F866:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: technicaltest.com.
+      HostedZoneTags:
+        - Key: Project
+          Value: technicaltest-nodesource
+      VPCs:
+        - VPCId:
+            Ref: vpcA2121C38
+          VPCRegion: us-east-1
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/HostedZone/Resource
+  SiteBucket397A1860:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: www.technicaltest.com
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteBucket/Resource
+  SiteBucketPolicy3AC1D0F8:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: SiteBucket397A1860
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal: "*"
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - SiteBucket397A1860
+                      - Arn
+                  - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteBucket/Policy/Resource
+  SiteCertificateCertificateRequestorFunctionServiceRole645E891D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteCertificate/CertificateRequestorFunction/ServiceRole/Resource
+  SiteCertificateCertificateRequestorFunctionServiceRoleDefaultPolicy96ED5C9C:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - acm:RequestCertificate
+              - acm:DescribeCertificate
+              - acm:DeleteCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action: route53:GetChange
+            Effect: Allow
+            Resource: "*"
+          - Action: route53:changeResourceRecordSets
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :route53:::hostedzone/
+                  - Ref: HostedZoneDB99F866
+        Version: "2012-10-17"
+      PolicyName: SiteCertificateCertificateRequestorFunctionServiceRoleDefaultPolicy96ED5C9C
+      Roles:
+        - Ref: SiteCertificateCertificateRequestorFunctionServiceRole645E891D
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteCertificate/CertificateRequestorFunction/ServiceRole/DefaultPolicy/Resource
+  SiteCertificateCertificateRequestorFunction7CFA7DEA:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2S3BucketFCCD3A76
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2S3VersionKey07AF06B6
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2S3VersionKey07AF06B6
+      Role:
+        Fn::GetAtt:
+          - SiteCertificateCertificateRequestorFunctionServiceRole645E891D
+          - Arn
+      Handler: index.certificateRequestHandler
+      Runtime: nodejs14.x
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+      Timeout: 900
+    DependsOn:
+      - SiteCertificateCertificateRequestorFunctionServiceRoleDefaultPolicy96ED5C9C
+      - SiteCertificateCertificateRequestorFunctionServiceRole645E891D
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteCertificate/CertificateRequestorFunction/Resource
+      aws:asset:path: asset.19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2
+      aws:asset:property: Code
+  SiteCertificateCertificateRequestorResource6021082A:
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - SiteCertificateCertificateRequestorFunction7CFA7DEA
+          - Arn
+      DomainName: www.technicaltest.com
+      HostedZoneId:
+        Ref: HostedZoneDB99F866
+      Region: us-east-1
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteCertificate/CertificateRequestorResource/Default
+  SiteDistributionCFDistribution209CF7F5:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - www.technicaltest.com
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          TargetOriginId: origin1
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginProtocolPolicy: http-only
+              OriginReadTimeout: 30
+              OriginSSLProtocols:
+                - TLSv1.2
+            DomainName:
+              Fn::Select:
+                - 2
+                - Fn::Split:
+                    - /
+                    - Fn::GetAtt:
+                        - SiteBucket397A1860
+                        - WebsiteURL
+            Id: origin1
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn:
+            Fn::GetAtt:
+              - SiteCertificateCertificateRequestorResource6021082A
+              - Arn
+          MinimumProtocolVersion: TLSv1.1_2016
+          SslSupportMethod: sni-only
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteDistribution/CFDistribution
+  SiteAliasRecord3C0AF5BF:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: www.technicaltest.com.
+      Type: A
+      AliasTarget:
+        DNSName:
+          Fn::GetAtt:
+            - SiteDistributionCFDistribution209CF7F5
+            - DomainName
+        HostedZoneId:
+          Fn::FindInMap:
+            - AWSCloudFrontPartitionHostedZoneIdMap
+            - Ref: AWS::Partition
+            - zoneId
+      HostedZoneId:
+        Ref: HostedZoneDB99F866
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/SiteAliasRecord/Resource
+  DeployWithInvalidationAwsCliLayerDEDD5787:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      Content:
+        S3Bucket:
+          Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F
+      Description: /opt/awscli/aws
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/DeployWithInvalidation/AwsCliLayer/Resource
+      aws:asset:path: asset.e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68.zip
+      aws:asset:property: Content
+  DeployWithInvalidationCustomResourceE3FF7455:
+    Type: Custom::CDKBucketDeployment
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536
+          - Arn
+      SourceBucketNames:
+        - Ref: AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3Bucket9D084878
+      SourceObjectKeys:
+        - Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3VersionKey30B4A2FA
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3VersionKey30B4A2FA
+      DestinationBucketName:
+        Ref: SiteBucket397A1860
+      Prune: true
+      DistributionId:
+        Ref: SiteDistributionCFDistribution209CF7F5
+      DistributionPaths:
+        - /*
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/DeployWithInvalidation/CustomResource/Default
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3Bucket9D084878
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3Bucket9D084878
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - SiteBucket397A1860
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - SiteBucket397A1860
+                        - Arn
+                    - /*
+          - Action:
+              - cloudfront:GetInvalidation
+              - cloudfront:CreateInvalidation
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+      Roles:
+        - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70
+      Role:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+          - Arn
+      Handler: index.handler
+      Layers:
+        - Ref: DeployWithInvalidationAwsCliLayerDEDD5787
+      Runtime: python3.6
+      Tags:
+        - Key: Project
+          Value: technicaltest-nodesource
+      Timeout: 900
+    DependsOn:
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource
+      aws:asset:path: asset.c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAAA01SyW7bMBD9lt4ppm7SAr3VkZsF6CLIhQPkNiLHDmOKFMhhDEPQv3do2ZZO82Z/syzk92/y86cfcIiF0vubXvmAsl8TqL2oMfoUFIpy6/4m6hKJ0rtIISkSyxiROG5n3E6UKZJv5/FzXEGAFglDVn5D13HKIHLLHtUX2W86lT2bqhRVaqxR69Q4pGybUO0T4T9oLE72ycZsvDJAxrtrcAY/n6ss/gA9AuEBjqIK5oPhVPjZMTPGl4CRyVlbEm/irUVHgwi56Ndb2Z9LPPlIqF+9O3WaacsaeY16XENGa+T0yJn3Se3Hrmc0isrz0MfJPOqDUBjIbI3iZi042GGQKxc3YI1mky4nt7DQNhpk/5Ccumxhjn/BEcMGQ8z6mg9gkfw1YhAGWtnXftzuSU6kLnTibdFDPnuUp+sLjZ31x7wdORJfXQ1M3vqkt8Gzsy8zfsj4BZuV4RcyTbpQm+vDcJ6ksJlwwU+irJHLQyytOc0wCOc1yvd487G4k4v8ve/RmCIkR6ZFWY/yP2YteWDZAgAA
+    Metadata:
+      aws:cdk:path: technicaltest-nodesource/CDKMetadata/Default
+Outputs:
+  Site:
+    Value: https://www.technicaltest.com
+  Bucket:
+    Value:
+      Ref: SiteBucket397A1860
+  Certificate:
+    Value:
+      Fn::GetAtt:
+        - SiteCertificateCertificateRequestorResource6021082A
+        - Arn
+  DistributionId:
+    Value:
+      Ref: SiteDistributionCFDistribution209CF7F5
+Parameters:
+  AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2S3BucketFCCD3A76:
+    Type: String
+    Description: S3 bucket for asset "19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2"
+  AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2S3VersionKey07AF06B6:
+    Type: String
+    Description: S3 key for asset version "19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2"
+  AssetParameters19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2ArtifactHash652C125C:
+    Type: String
+    Description: Artifact hash for asset "19e461d2ff1a5b90438fed6ceee4c197d7efee8712a6f76d85b501ab20bfb1a2"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7:
+    Type: String
+    Description: S3 bucket for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F:
+    Type: String
+    Description: S3 key for asset version "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68ArtifactHashD9A515C3:
+    Type: String
+    Description: Artifact hash for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C:
+    Type: String
+    Description: S3 bucket for asset "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70:
+    Type: String
+    Description: S3 key for asset version "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfArtifactHash85F58E48:
+    Type: String
+    Description: Artifact hash for asset "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3Bucket9D084878:
+    Type: String
+    Description: S3 bucket for asset "45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867"
+  AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867S3VersionKey30B4A2FA:
+    Type: String
+    Description: S3 key for asset version "45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867"
+  AssetParameters45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867ArtifactHashF550112D:
+    Type: String
+    Description: Artifact hash for asset "45ae4860371fcd28b282bcf1c9104310ff13c0e20016ece935e14473ec597867"
+Mappings:
+  AWSCloudFrontPartitionHostedZoneIdMap:
+    aws:
+      zoneId: Z2FDTNDATAQYW2
+    aws-cn:
+      zoneId: Z3RFFRIM2A3IF5
+

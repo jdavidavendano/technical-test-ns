@@ -1,0 +1,11 @@
+.venv
+.boto
+info.yml
+*.pem
+cdk.out/
+node_modules/
+*.js
+package-lock.json
+cdk.context.json
+output.txt
+
